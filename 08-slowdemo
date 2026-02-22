@@ -192,6 +192,8 @@ MAX_height=$(("$H"-1))
 MAX=$(("$W" + "$MAX_height" * "$W"))
 while (("$idx" < "$MAX")); do
     printf "${Signals[$((idx))]}"
+    # SLOW
+    sleep 0.0005s    
 
     idx+=1
     if [[ $((idx % W)) == 0 ]]; then
