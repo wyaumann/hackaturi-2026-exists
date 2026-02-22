@@ -1,0 +1,8 @@
+#https://devhints.io/bash
+#https://devmanual.gentoo.org/tools-reference/bash/index.html
+
+if [[ $# -ne 0 ]] ; then
+    echo $1! $1! $1!
+else
+    echo "Usage: prog <arg>"
+fi

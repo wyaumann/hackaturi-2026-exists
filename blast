@@ -1,0 +1,11 @@
+# floodfill...
+# incorrect floodfills...?
+# lightningy floodfills  ?
+# [row] [col] ? NOPE!! \o/
+
+for i in {0..30}; do
+    for j in {0..119}; do
+        printf $(("$j" % 10))
+    done
+    printf "\n"
+done
