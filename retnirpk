@@ -1,0 +1,6 @@
+while true; do
+    printf "\- \-"
+    sleep 0.015s
+    printf " | "
+    sleep 0.015s
+done

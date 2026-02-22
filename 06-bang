@@ -1,0 +1,206 @@
+# wilhe
+# Wilhelmina Aumann, Computer Science BS
+# wyaumann@uri.edu
+# hack-uri-2026.devpost.com   _o/ !!!
+#
+# idx = row*(W) + col
+# L   = this-1
+# U   = this-W
+# R   = this+1
+# D   = this+W
+#
+# FIRST DRAFT SETTINGS...
+# this node      vertical strong signal   horizontal strong signal
+#   -              X         -              -         -
+# - t -          - t -  |  - t -          X t -  |  - t X
+#   -              -         X              -         -
+#                60% this X               80% this X
+#                20% this .               10% this .
+#                20% this _               10% this _
+#
+#                vertical weak signal     horizontal weak signal
+#                  .         -              -           -
+#                - t -  |  - t -          . t -   |   - t .
+#                  -         .              -           -
+#                30% this X               30% this X
+#                20% this .               50% this .
+#                50% this _               20% this _
+#
+#                diagonal weak signal
+#                  .         .         -         -
+#                - t .  |  . t -  |  . t -  |  - t .
+#                  -         -         .         .
+#                50% this X
+#                30% this .
+#                20% this _
+# goals:
+# [x] strong signal line(s) travel diagonally across screen (bias horizontal)
+# [x] weak signals glow along signal line
+# [ ] entire field doesn't light up too much
+# [x] entire signal doesn't die too fast
+# [ ] timing looks nice
+#
+# [ ] argument controls
+
+###
+# Variables, init
+###
+W=120
+H=30
+Signals=()
+
+for ((i = 0; "$i" < "$H"; i++)); do
+    for ((j = 0; "$j" < "$W"; j++)); do
+        #idx=$((j + r*W))
+        Signals+=(" ")
+    done
+    #printf "\n"
+done
+
+###
+# Start conditions
+###
+Signals[119]="X"
+#declare -i simulation_steps
+#simulation_steps=24
+
+#while (("$simulation_steps" > 0)); do
+
+###
+# Simulate...
+###
+# for every item in Signals,
+# check for first matching pattern
+declare -i vert_Strong
+declare -i horz_Strong
+declare -i vert_weak
+declare -i horz_weak
+declare -i diag_weak
+declare -i idx
+vert_Strong=0
+horz_Strong=0
+vert_weak=0
+horz_weak=0
+diag_weak=0
+idx=0
+MAX_height=$(("$H"-1))
+MAX=$(("$W" + "$MAX_height" * "$W"))
+while (("$idx" < "$MAX")); do
+    L="${Signals[$((idx - 1))]}"
+    U="${Signals[$((idx - W))]}"
+    R="${Signals[$((idx + 1))]}"
+    D="${Signals[$((idx + W))]}"
+    this="${Signals[$((idx))]}"    
+
+    # Strong signals
+    if [[ "$U" == "X" || "$D" == "X" ]]; then
+        vert_Strong=1
+    fi
+    if [[ "$L" == "X" || "$R" == "X" ]]; then
+        horz_Strong=1
+    fi
+    # weak signals
+    if [[ "$U" == "." || "$D" == "." ]]; then
+        vert_weak=1
+    fi
+    if [[ "$L" == "." || "$R" == "." ]]; then
+        horz_weak=1
+    fi
+    if [[ "$vert_weak" == 1 && "$horz_weak" == 1 ]]; then
+        diag_weak=1
+    fi
+
+    ###
+    # Edit this node now
+    ###
+    # added dissipation
+    # removed for strong signal
+    # strong signal chance each step nerfed more
+    # weak signal chance for strong signal nerfed
+    rand=$(($RANDOM%100))
+    if [[ "$vert_Strong" == 1 ]]; then
+        if [[ "$rand" < 40 ]]; then 
+            Signals[$((idx))]="X"
+        elif [[ "$rand" > 75 ]]; then
+            Signals[$((idx))]="."
+        #else
+        #    Signals[$((idx))]=" "
+        fi
+    
+    elif [[ "$horz_Strong" == 1 ]]; then
+        if [[ "$rand" < 40 ]]; then
+            Signals[$((idx))]="X"
+        elif [[ "$rand" > 75 ]]; then
+            Signals[$((idx))]="."
+        #else
+        #    Signals[$((idx))]=" "
+        fi
+    
+    elif [[ "$vert_weak" == 1 ]]; then
+        if [[ "$rand" < 40 ]]; then
+            Signals[$((idx))]="X"
+        elif [[ "$rand" > 80 ]]; then
+            Signals[$((idx))]="."
+        else
+            Signals[$((idx))]=" "
+        fi
+    
+    elif [[ "$horz_weak" == 1 ]]; then
+        if [[ "$rand" < 50 ]]; then
+            Signals[$((idx))]="X"
+        elif [[ "$rand" > 50 ]]; then
+            Signals[$((idx))]="."
+        else
+            Signals[$((idx))]=" "
+        fi
+    
+    elif [[ "$diag_weak" == 1 ]]; then
+        if [[ "$rand" < 60 ]]; then
+            Signals[$((idx))]="X"
+        elif [[ "$rand" > 70 ]]; then
+            Signals[$((idx))]="."
+        else
+            Signals[$((idx))]=" "
+        fi
+    else
+        :
+    fi
+
+    ###
+    # Reset flags, increment index
+    ###
+    vert_Strong=0
+    horz_Strong=0
+    vert_weak=0
+    horz_weak=0
+    diag_weak=0
+    idx+=1
+done
+
+###
+# Print this sim step...
+###
+declare -i idx
+idx=0
+MAX_height=$(("$H"-1))
+MAX=$(("$W" + "$MAX_height" * "$W"))
+while (("$idx" < "$MAX")); do
+    printf "${Signals[$((idx))]}"
+
+    idx+=1
+    if [[ $((idx % W)) == 0 ]]; then
+        printf "\n"
+    fi
+done
+
+###
+# WAIT . . .
+###
+#sleep 0.05s
+
+###
+# Stop after x simulation steps
+###
+#simulation_steps+=-1
+
+#done
