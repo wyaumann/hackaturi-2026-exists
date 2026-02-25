@@ -1,6 +1,7 @@
-
+```
+ 09-veryslowdemo        | see lightning form, sped up when scanning blank characters
  08-slowdemo            | see lightning form more slowly
- 07-interactive         | most-stable lightning generator
+ 07-interactive         | most-stable instant lightning generator
  05 04 03               | lightning generation with simulation steps
   ^  ^  ^ FLASHING!!!   |
  02-lleaders            | tentative implementation
@@ -13,7 +14,7 @@
 
  wilhe    wyaumann@uri.edu    hack-uri-2026.devpost.com
 
-\//\/\/\/\/\/\/\//\/\/\/\//\/\/\/\/\\//\/\/\/\\/\/\/\/\/\//\
+\//\/\/\/\/\/\/\//\/\/\/\//\/\/\/\/\\//\/\/\/\\/\/\/\/\/\//\\\/\/\/\/\\\//\\/\/\\/\/\
 
  formatting = color test
  echoer     = argument test
